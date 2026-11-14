@@ -1,0 +1,447 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Syne", sans-serif;
+  --font-sans: "DM Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-obsidian: #0D0D0C;
+  --color-stone: #6B6B66;
+  --color-paper: #FFFFFF;
+  --color-alabaster: #F8F8F6;
+  --color-hairline: #E8E8E4;
+  --color-sand: #A8947A;
+
+  --tracking-ultra: 0.22em;
+}
+
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  background-color: #FFFFFF;
+  color: #0D0D0C;
+  font-family: var(--font-sans);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Apple iOS 26 Liquid Glass Adaptive Navigation Bar */
+.liquid-glass-nav {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 0px;
+  border-radius: 0px;
+  background: linear-gradient(180deg, rgba(13, 13, 12, 0.44) 0%, rgba(13, 13, 12, 0.22) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  backdrop-filter: blur(14px) saturate(145%);
+  -webkit-backdrop-filter: blur(14px) saturate(145%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition:
+    max-width 620ms cubic-bezier(0.22, 1, 0.36, 1),
+    margin-top 620ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 620ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 620ms cubic-bezier(0.22, 1, 0.36, 1),
+    backdrop-filter 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: max-width, margin-top, border-radius, box-shadow;
+}
+
+.liquid-glass-nav::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.62) 0%,
+    rgba(255, 255, 255, 0.12) 42%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transition: opacity 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.liquid-glass-nav[data-floating='true'] {
+  max-width: min(920px, calc(100vw - 24px));
+  margin-top: 14px;
+  border-radius: 32px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.74) 0%,
+    rgba(255, 255, 255, 0.5) 52%,
+    rgba(244, 245, 248, 0.68) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(28px) saturate(200%) brightness(1.06);
+  -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.06);
+  box-shadow:
+    0 20px 44px -12px rgba(13, 13, 12, 0.2),
+    0 4px 12px rgba(13, 13, 12, 0.06),
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.94),
+    inset 0 -1px 1px rgba(13, 13, 12, 0.06);
+}
+
+.liquid-glass-nav[data-floating='true']::before {
+  opacity: 1;
+}
+
+/* Hero animations */
+@keyframes kenBurnsSlow {
+  0% {
+    transform: scale(1) translate3d(0%, 0%, 0);
+  }
+  50% {
+    transform: scale(1.08) translate3d(-1.5%, -1%, 0);
+  }
+  100% {
+    transform: scale(1) translate3d(0%, 0%, 0);
+  }
+}
+
+@keyframes subtleSweep {
+  0% {
+    transform: translateX(-100%) skewX(-18deg);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.22;
+  }
+  100% {
+    transform: translateX(220%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+@keyframes heroTextMask {
+  0% {
+    opacity: 0;
+    transform: translateY(115%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.4s var(--ease-out-expo);
+  will-change: opacity, transform;
+}
+
+.hero-slide.active {
+  opacity: 1;
+}
+
+.hero-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: kenBurnsSlow 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+.hero-parallax-layer {
+  transform: translate3d(0, calc(var(--hero-p, 0) * 56px), 0) scale(calc(1 + var(--hero-p, 0) * 0.08));
+  will-change: transform;
+}
+
+.hero-foreground-drift {
+  transform: translate3d(0, calc(var(--hero-p, 0) * -28px), 0);
+  opacity: calc(1 - var(--hero-p, 0) * 0.72);
+  will-change: transform, opacity;
+}
+
+.marquee-scrub-track {
+  transform: translate3d(calc((var(--scroll-p, 0.5) - 0.5) * -280px), 0, 0);
+  will-change: transform;
+}
+
+.panorama-scrub-img {
+  transform: scale(calc(1.16 - var(--scroll-p, 0.5) * 0.14)) translate3d(0, calc((var(--scroll-p, 0.5) - 0.5) * -36px), 0);
+  will-change: transform;
+}
+
+.hero-light-sweep {
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  animation: subtleSweep 11s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.hero-reveal-line {
+  overflow: hidden;
+  display: block;
+}
+
+.hero-reveal-inner {
+  display: inline-block;
+  animation: heroTextMask 1.15s var(--ease-out-expo) both;
+}
+
+/* Scroll reveal systems */
+.anim-lift {
+  opacity: 0.08;
+  transform: translateY(34px);
+  transition: opacity 0.65s var(--ease-out-expo), transform 0.75s var(--ease-out-expo);
+  will-change: opacity, transform;
+}
+.anim-lift.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.anim-lift .img-settle {
+  transform: scale(1.05);
+  transition: transform 0.95s var(--ease-out-expo);
+}
+.anim-lift.is-visible .img-settle {
+  transform: scale(1);
+}
+
+.anim-curtain-left {
+  clip-path: inset(0 18% 0 0);
+  opacity: 0.25;
+  transform: translateX(-18px);
+  transition:
+    clip-path 0.78s var(--ease-in-out-quint),
+    opacity 0.6s ease,
+    transform 0.78s var(--ease-out-expo);
+  will-change: clip-path, opacity, transform;
+}
+.anim-curtain-left.is-visible {
+  clip-path: inset(0 0% 0 0);
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.anim-curtain-right {
+  clip-path: inset(0 0 0 18%);
+  opacity: 0.25;
+  transform: translateX(18px);
+  transition:
+    clip-path 0.78s var(--ease-in-out-quint),
+    opacity 0.6s ease,
+    transform 0.78s var(--ease-out-expo);
+  will-change: clip-path, opacity, transform;
+}
+.anim-curtain-right.is-visible {
+  clip-path: inset(0 0 0 0%);
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.anim-slide-counter {
+  opacity: 0.15;
+  transform: translateX(24px);
+  transition: opacity 0.68s var(--ease-out-expo) 0.08s, transform 0.68s var(--ease-out-expo) 0.08s;
+}
+.anim-slide-counter.from-left {
+  transform: translateX(-24px);
+}
+.anim-slide-counter.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.anim-focus-zoom {
+  opacity: 0.15;
+  filter: blur(6px);
+  transform: scale(0.96);
+  transition:
+    opacity 0.7s var(--ease-out-expo),
+    filter 0.75s var(--ease-out-expo),
+    transform 0.75s var(--ease-out-expo);
+  will-change: opacity, filter, transform;
+}
+.anim-focus-zoom.is-visible {
+  opacity: 1;
+  filter: blur(0px);
+  transform: scale(1);
+}
+
+.perspective-wrap {
+  perspective: 1400px;
+}
+.anim-unfold {
+  opacity: 0.15;
+  transform: rotateX(10deg) translateY(28px) scale(0.98);
+  transform-origin: center top;
+  transition: opacity 0.65s var(--ease-out-expo), transform 0.75s var(--ease-out-expo);
+  will-change: opacity, transform;
+}
+.anim-unfold.is-visible {
+  opacity: 1;
+  transform: rotateX(0deg) translateY(0) scale(1);
+}
+
+.anim-split-left {
+  opacity: 0.15;
+  transform: translateX(-28px);
+  transition: opacity 0.7s var(--ease-out-expo), transform 0.75s var(--ease-out-expo);
+}
+.anim-split-right {
+  opacity: 0.15;
+  transform: translateX(28px);
+  transition: opacity 0.7s var(--ease-out-expo) 0.08s, transform 0.75s var(--ease-out-expo) 0.08s;
+}
+.anim-split-left.is-visible,
+.anim-split-right.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.anim-unmask-up {
+  opacity: 0.15;
+  clip-path: inset(22% 0 0 0);
+  transform: translateY(18px);
+  transition:
+    clip-path 0.7s var(--ease-out-expo),
+    opacity 0.65s ease,
+    transform 0.7s var(--ease-out-expo);
+}
+.anim-unmask-up.is-visible {
+  opacity: 1;
+  clip-path: inset(0% 0 0 0);
+  transform: translateY(0);
+}
+
+.image-hover-zoom img {
+  transition: transform 0.85s var(--ease-out-expo);
+}
+.image-hover-zoom:hover img {
+  transform: scale(1.04);
+}
+
+/* White Architectural Preloader & 3D Studio Staging Animations */
+@keyframes preloaderLetterUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 118%, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0%, 0);
+  }
+}
+
+@keyframes preloaderLineExpand {
+  0% {
+    transform: scaleX(0);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes preloaderProgressSweep {
+  0% {
+    transform: scaleX(0.06);
+  }
+  65% {
+    transform: scaleX(0.84);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes studioWireOrbit {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.04);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes studioWireCounter {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.preloader-letter {
+  display: inline-block;
+  animation: preloaderLetterUp 0.78s var(--ease-out-expo) both;
+  will-change: transform, opacity;
+}
+
+.preloader-rule {
+  transform-origin: center;
+  animation: preloaderLineExpand 0.9s var(--ease-out-expo) 0.25s both;
+  will-change: transform, opacity;
+}
+
+.preloader-progress-fill {
+  transform-origin: left center;
+  animation: preloaderProgressSweep 1.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform;
+}
+
+.studio-loader-orbit {
+  animation: studioWireOrbit 4.2s linear infinite;
+  will-change: transform;
+}
+
+.studio-loader-counter {
+  animation: studioWireCounter 6s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide img,
+  .hero-light-sweep,
+  .hero-reveal-inner,
+  .preloader-letter,
+  .preloader-rule,
+  .preloader-progress-fill,
+  .studio-loader-orbit,
+  .studio-loader-counter {
+    animation: none !important;
+  }
+  .anim-lift,
+  .anim-curtain-left,
+  .anim-curtain-right,
+  .anim-slide-counter,
+  .anim-focus-zoom,
+  .anim-unfold,
+  .anim-split-left,
+  .anim-split-right,
+  .anim-unmask-up,
+  .hero-parallax-layer,
+  .hero-foreground-drift,
+  .marquee-scrub-track,
+  .panorama-scrub-img {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+}

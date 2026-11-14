@@ -1,0 +1,6 @@
+{
+  "name": "ATELIER KOVA",
+  "description": "Minimalist modern architectural real estate featuring an interactive 3D residence studio, curated residences, and serene interior spaces.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
